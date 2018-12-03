@@ -2,41 +2,88 @@ import React from "react";
 
 class HOC extends React.Component {
   state = {
-    count: 0,
-    listner: ""
+    intervals: {},
+    children: {}
+  };
+
+  startTimer = async id => {
+    await this.setState({
+      intervals: { ...this.state.intervals, [id]: { value: 0 } }
+    });
+    const newTimer = setInterval(() => {
+      if (this.state.children[id]) {
+        const newChild = { ...this.state.intervals[id] };
+        newChild.value += 1;
+
+        const newInterval = { ...this.state.intervals };
+        newInterval[id] = newChild;
+        this.setState({
+          intervals: newInterval
+        });
+      } else this.clearTheTimer(id);
+    }, 1000);
+
+    this.setState({
+      intervals: {
+        ...this.state.intervals,
+        [id]: { ...this.state.intervals[id], timer: newTimer }
+      }
+    });
+  };
+
+  clearTheTimer = id => {
+    if (this.state.intervals[id]) {
+      clearInterval(this.state.intervals[id].timer);
+      console.log("timer cleared from ", id);
+      console.log(this.state.intervals);
+    }
+  };
+
+  activateChild = id => {
+    this.setState({
+      children: { ...this.state.children, [id]: true }
+    });
   };
 
   componentDidMount() {
-    // creating a interval
-    const a = setInterval(() => {
-      // Checking If Children is present Or Not
-      if (React.Children.count(this.props.children) > 0) {
-        // If present updating the counter
-        this.setState({
-          count: this.state.count + 1
-        });
-      } else {
-        // else clearing the interval
-        clearInterval(this.state.listner);
-      }
-    }, 500);
-
-    // storing the listner in the state
+    let newChildren = {};
+    React.Children.toArray(this.props.children).forEach(child => {
+      newChildren = { ...newChildren, [child.key]: true };
+    });
     this.setState({
-      listner: a
+      children: newChildren
     });
   }
+
+  async componentDidUpdate(prevProps) {
+    if (
+      React.Children.toArray(prevProps.children).length !==
+      React.Children.toArray(this.props.children).length
+    ) {
+      await this.setState({
+        children: {}
+      });
+      React.Children.toArray(this.props.children).forEach(child => {
+        this.activateChild(child.key);
+      });
+    }
+  }
+
   render() {
     return (
       <div>
-        {React.Children.map(this.props.children, child => {
+        {React.Children.toArray(this.props.children).map(child => {
           return React.cloneElement(child, [
-            { count: this.state.count, ...this.props }
+            {
+              id: child.key,
+              startTimer: this.startTimer,
+              value: this.state.intervals[child.key]
+                ? this.state.intervals[child.key].value
+                : 0,
+              ...this.props
+            }
           ]);
         })}
-        {React.Children.count(this.props.children) === 0 && (
-          <h1>children unmounted</h1>
-        )}
       </div>
     );
   }

@@ -1,13 +1,18 @@
 import React from "react";
 
 class View extends React.Component {
+  startTimer = () => {
+    this.props[0].startTimer(this.props[0].id);
+  };
   render() {
-    const { count } = this.props[0];
-    console.log(this.props);
+    const { value } = this.props[0];
     return (
       <div>
-        <h1>I am a children</h1>
-        <h2>and i have elapsed {count}s in real world</h2>
+        <h1>I am {this.props.data} </h1>
+        <h2>and i have elapsed {value}s in real world</h2>
+        <button type="button" onClick={this.startTimer}>
+          Start
+        </button>
       </div>
     );
   }

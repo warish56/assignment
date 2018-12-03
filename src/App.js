@@ -1,12 +1,12 @@
 import React, { Component, Fragment } from "react";
 import Hoc from "./Hoc";
 import View from "./View";
-import View2 from "./View2";
 import "./App.css";
 
 class App extends Component {
   state = {
-    active: true
+    active: true,
+    active1: true
   };
 
   componentDidMount() {
@@ -15,14 +15,23 @@ class App extends Component {
       this.setState({
         active: false
       });
-    }, 5000);
+    }, 10000);
+
+    setTimeout(() => {
+      this.setState({
+        active1: false
+      });
+    }, 15000);
   }
   render() {
     return (
       <Fragment>
         {/* forcing to unmount a children after 5s */}
-        <Hoc>{this.state.active ? <View /> : null}</Hoc>
-        <Hoc>{this.state.active ? <View2 /> : null}</Hoc>
+        <Hoc>
+          <View data="one" />
+          {this.state.active && <View data="two" />}
+          {this.state.active1 && <View data="threee" />}
+        </Hoc>
       </Fragment>
     );
   }
