@@ -29,10 +29,13 @@ class HOC extends React.Component {
   render() {
     return (
       <div>
-        <h1>{this.state.count}</h1>
-        {this.props.children}
+        {React.Children.map(this.props.children, child => {
+          return React.cloneElement(child, [
+            { count: this.state.count, ...this.props }
+          ]);
+        })}
         {React.Children.count(this.props.children) === 0 && (
-          <h1>Children Unmounted</h1>
+          <h1>children unmounted</h1>
         )}
       </div>
     );

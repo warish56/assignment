@@ -1,6 +1,7 @@
-import React, { Component } from "react";
+import React, { Component, Fragment } from "react";
 import Hoc from "./Hoc";
 import View from "./View";
+import View2 from "./View2";
 import "./App.css";
 
 class App extends Component {
@@ -18,8 +19,11 @@ class App extends Component {
   }
   render() {
     return (
-      // forcing to unmount a children after 5s
-      <Hoc>{this.state.active ? <View /> : null}</Hoc>
+      <Fragment>
+        {/* forcing to unmount a children after 5s */}
+        <Hoc>{this.state.active ? <View /> : null}</Hoc>
+        <Hoc>{this.state.active ? <View2 /> : null}</Hoc>
+      </Fragment>
     );
   }
 }
