@@ -6,7 +6,7 @@ class HOC extends React.Component {
     children: {}
   };
 
-  startTimer = async id => {
+  startTimer = async (id,cb) => {
     await this.setState({
       intervals: { ...this.state.intervals, [id]: { value: 0 } }
     });
@@ -21,6 +21,8 @@ class HOC extends React.Component {
           intervals: newInterval
         });
       } else this.clearTheTimer(id);
+
+      cb()
     }, 1000);
 
     this.setState({
