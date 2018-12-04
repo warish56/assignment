@@ -12,6 +12,7 @@ class HOC extends React.Component {
     });
     const newTimer = setInterval(() => {
       if (this.state.children[id]) {
+        cb();
         const newChild = { ...this.state.intervals[id] };
         newChild.value += 1;
 
@@ -22,7 +23,6 @@ class HOC extends React.Component {
         });
       } else this.clearTheTimer(id);
 
-      cb()
     }, 1000);
 
     this.setState({
